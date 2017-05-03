@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,16 +13,16 @@ namespace Indicator
     {
         public Counter()
         {
-            this._minValue = 0;
-            this._maxValue = 5000;
-            this._value = 0;
+            this.MinValue = 0;
+            this.MaxValue = 5000;
+            this.Value = 0;
         }
 
         public Counter(int max, int min, double value)
         {
-            this._minValue = min;
-            this._maxValue = max;
-            this._value = value;
+            this.MinValue = min;
+            this.MaxValue = max;
+            this.Value = value;
         } 
 
         private double _maxValue;
@@ -38,7 +39,7 @@ namespace Indicator
                 if (value <= 0)
                 {
                     _maxValue = 5000;
-                    throw new FormatException("Incorrect maximum value of electricity meter! This value setted by default: 5000");
+                    MessageBox.Show("Bits can't be less then accuracy. Bits setted by default to 8", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -56,8 +57,7 @@ namespace Indicator
             {
                 if (value < 0)
                 {
-                    _maxValue = 0;
-                    throw new FormatException("Incorrect mainimumm value of electricity meter! This value setted by default: 0");
+                    _minValue = 0;
                 }
                 else
                 {
@@ -76,10 +76,12 @@ namespace Indicator
                 if ((value >= MaxValue) || (value < MinValue))
                 {
                     this._value = 0;
+                    MessageBox.Show("The value must be in  the correct  interval!", "Information", MessageBoxButton.OK, MessageBoxImage.Information); 
                 }
                 else if (value < 0)
                 {
-                    throw new FormatException("Incorrect value of electricity meter! This value setted by default: 0");
+                    value = 0;
+                    MessageBox.Show("The value must be non-negative and integer value!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -97,13 +99,15 @@ namespace Indicator
             this.MinValue = 0;
             this.MaxValue = 5000;
             this.Value = 0;
+            this.Bit = 8;
+            this.Accuracy = 3;
         }
         public Electricity_meter(int max, int min ,double value, int accuracy, int bit ):base(max,min,value)
         {
-            this._accuracy = accuracy;
-            this._bit = bit;
+            this.Accuracy = accuracy;
+            this.Bit = bit;
         }
-        private  int _bit;
+        private int _bit;
         private int _accuracy;
         public  int Bit
         {
@@ -116,7 +120,12 @@ namespace Indicator
                 if (value > 8)
                 {
                     _bit = 8;
-                    throw new FormatException("Incorrect enterd bit value!This value setted by default: 8 bit");
+                    MessageBox.Show("Maximum value of bit must be less or equal 8. Bits setted by default to 8", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (value < _accuracy)
+                {
+                    _bit = 8;
+                    MessageBox.Show("Bits can't be less then accuracy. Bits setted by default to 8", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -124,7 +133,7 @@ namespace Indicator
                 }
             }
         }
-        public  int Accuracy
+        public int Accuracy
         {
             get
             {
@@ -132,10 +141,10 @@ namespace Indicator
             }
             set
             {
-                if (_accuracy < 0 || _accuracy >= _bit)
+                if (value < 0 || value >= _bit)
                 {
                     _accuracy = 1;
-                    throw new FormatException("Incorrect enterd accuracy value!This value setted by default: 1");
+                    MessageBox.Show("Accuracy can't be higher then bits. Accurace setted by default to 1", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -143,11 +152,10 @@ namespace Indicator
                 }
             }
         }
-        public  IEnumerator GetEnumerator()
+        public IEnumerator GetEnumerator()
         {
-            yield return this.Value;
-            
-        }
+            yield return this.Value + 100;
+        } 
 
         public override List<int> Show()
         {
@@ -161,7 +169,8 @@ namespace Indicator
                 result.Add(i);
             }
             return result;
-        }
+        } 
+
         public static Electricity_meter operator ++(Electricity_meter counter)
         {
             counter.Value++;
@@ -172,6 +181,16 @@ namespace Indicator
             counter.Value--;
             return counter;
         }
+        public static Electricity_meter operator +(Electricity_meter counter, int asc)
+        {
+            counter.Value = counter.Value + asc;
+            return counter;
+        }
+        public static Electricity_meter operator -(Electricity_meter counter, int desc)
+        {
+            counter.Value = counter.Value - desc;
+            return counter;
+        }
     }
 
     public class Calculated_book
@@ -180,11 +199,12 @@ namespace Indicator
         {
             this._price = 10;
             this.Date = "January";
+            Book = new List<Electricity_meter>(); 
         }
         public Calculated_book(double price, string date)
         {
             this._price = price;
-            Date = date;
+            Date = date; 
         }
         public double _price { get; set; }
         private string _date; 
@@ -199,7 +219,7 @@ namespace Indicator
                 if (value <= 0)
                 {
                     _price = 10;
-                    throw new FormatException("Incorrect enterd price value!This value setted by default: 10");
+                    MessageBox.Show("Price can't be less or equal 0. Price setted by default to 10", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -225,18 +245,39 @@ namespace Indicator
                 }
             }
         }
-        public double CommonSum { get; set; }
         public List<Electricity_meter> Book = new List<Electricity_meter>();
-        public double Calculate_price()
+        public Electricity_meter this[int x]
         {
+            get
+            {
+                if (x < Book.Count)
+                {
+                    return Book[x];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                Book[x] = value;
+            }
+        }
+
+    public Point Calculate_price()
+        { 
            double WholeElectricity = 0;
            foreach (var i in Book)
            {
                WholeElectricity +=(double) i.Value/Math.Pow(10,i.Accuracy); 
            }
-           CommonSum = WholeElectricity * _price;
-           return CommonSum;
-       }
-        public double[] Total_prices = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+           double CommonSum = WholeElectricity * _price;
+           Point result = new Point(CommonSum, WholeElectricity);
+           return result;
+        }
+        public Point[] Total_prices = new Point[12] { new Point(0,0), new Point(0, 0), new Point(0, 0),
+            new Point(0,0), new Point(0,0), new Point(0,0), new Point(0,0), new Point(0,0), new Point(0,0),
+            new Point(0,0), new Point(0,0), new Point(0,0) };
     }
 }

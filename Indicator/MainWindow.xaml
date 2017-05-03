@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="MainWindow" Height="627" Width="788">
+        Title="MainWindow" Height="627" Width="821">
     <Window.Resources>
         <Storyboard x:Key="OnMouseLeftButtonDown1">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="Numb1new">
@@ -44,7 +44,7 @@
             <BeginStoryboard Storyboard="{StaticResource downAnimation}"/>
         </EventTrigger>
     </Window.Triggers>
-    <Grid Margin="0,0,2,0">
+    <Grid Margin="0,0,0,0">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="#FFA00000" Offset="0"/>
@@ -118,6 +118,8 @@
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
+        <Image x:Name="b_add" HorizontalAlignment="Left" Height="32" Margin="752,43,0,0" VerticalAlignment="Top" Width="36" Source="add.png" RenderTransformOrigin="0.5,0.5" MouseLeftButtonDown="b_add_MouseLeftButtonDown" />
+        <Image x:Name="b_minus" HorizontalAlignment="Left" Height="32" Margin="752,112,0,0" VerticalAlignment="Top" Width="36" Source="minus.png" RenderTransformOrigin="0.5,0.5" MouseLeftButtonDown="b_minus_MouseLeftButtonDown" />
         <Image x:Name="b_up" HorizontalAlignment="Left" Height="54" Margin="690,95,0,0" VerticalAlignment="Top" Width="52" Source="arrow-icon--myiconfinder-23.png" RenderTransformOrigin="0.5,0.5" MouseLeftButtonDown="b_up_MouseLeftButtonDown">
             <Image.Effect>
                 <DropShadowEffect BlurRadius="20"/>
@@ -131,12 +133,12 @@
                 </TransformGroup>
             </Image.RenderTransform>
         </Image>
-        <TextBox x:Name="tb_value_of_new_Counter" HorizontalAlignment="Left"  Height="40" Margin="19,275,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="147" FontSize="22" OpacityMask="#FFF1B0B0" Background="#FF746060" Text="123456&#xD;&#xA;" FontWeight="Bold">
+        <TextBox x:Name="tb_value_of_new_Counter" Foreground="AntiqueWhite" HorizontalAlignment="Left"  Height="40" Margin="137,263,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="147" FontSize="22" OpacityMask="#FFF1B0B0" Background="#FF746060" Text="123456" FontWeight="Bold" TextChanged="tb_value_of_new_Counter_TextChanged">
             <TextBox.Effect>
                 <DropShadowEffect BlurRadius="30"/>
             </TextBox.Effect>
         </TextBox>
-        <Button Content="Add new &#xD;&#xA;counter&#xD;&#xA;" HorizontalAlignment="Left" Margin="19,330,0,0" VerticalAlignment="Top" Width="147" RenderTransformOrigin="0.227,-0.5" Height="55" FontWeight="Bold" FontSize="18" Click="Button_Click_2" FontFamily="Cooper Black">
+        <Button Content="Add new counter" HorizontalAlignment="Left" Margin="19,318,0,0" VerticalAlignment="Top" Width="162" RenderTransformOrigin="0.227,-0.5" Height="55" FontWeight="Bold" FontSize="18" Click="Button_Click_2" FontFamily="Cooper Black">
             <Button.Effect>
                 <DropShadowEffect BlurRadius="30"/>
             </Button.Effect>
@@ -147,7 +149,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <Slider x:Name="slider" HorizontalAlignment="Left" Margin="263,296,0,0" VerticalAlignment="Top" Width="197" Foreground="#FFE42C2C" BorderBrush="#FF4F2E2E" Background="{x:Null}" RenderTransformOrigin="0.5,0.5" Value="5000000" Maximum="7000000" ValueChanged="slider_ValueChanged" SmallChange="1" TickPlacement="TopLeft" LargeChange="10000" TickFrequency="1000000">
+        <Slider x:Name="slider" HorizontalAlignment="Left" Margin="225,276,0,0" VerticalAlignment="Top" Width="197" Foreground="#FFE42C2C" BorderBrush="#FF4F2E2E" Background="{x:Null}" RenderTransformOrigin="0.5,0.5" Value="5000000" Maximum="7000000" ValueChanged="slider_ValueChanged" SmallChange="1" TickPlacement="TopLeft" LargeChange="10000" TickFrequency="1000000">
             <Slider.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -160,24 +162,17 @@
                 <DropShadowEffect/>
             </Slider.Effect>
         </Slider>
-        <Label Content="max" HorizontalAlignment="Left" Margin="348,183,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.375,0.615" Foreground="#FFFFF2F2" Background="#FFD32525" FontWeight="Bold"/>
-        <TextBox x:Name="l_accuracy" HorizontalAlignment="Left" Height="42" Margin="19,227,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" Background="#FF746060" FontSize="22" FontWeight="Bold" BorderBrush="{x:Null}" Text="3">
-            <TextBox.Effect>
-                <DropShadowEffect BlurRadius="30"/>
-            </TextBox.Effect>
-        </TextBox>
-        <Label x:Name="l_max" Content="5000000" HorizontalAlignment="Left" Margin="398,275,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.375,0.615" Foreground="#FFFFF2F2" Background="#FFD32525" FontWeight="Bold" Width="58" Height="40"/>
+        <Label Content="max" HorizontalAlignment="Left" Margin="310,163,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.375,0.615" Foreground="#FFFFF2F2" Background="#FFD32525" FontWeight="Bold"/>
+        <Label x:Name="l_max" Content="5000000" HorizontalAlignment="Left" Margin="352,255,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.375,0.615" Foreground="#FFFFF2F2" Background="#FFD32525" FontWeight="Bold" Width="58" Height="40"/>
         <Label x:Name="n8" Content="0" HorizontalAlignment="Left" Margin="610,34,0,0" VerticalAlignment="Top" Height="96" Background="{x:Null}" FontSize="72" Foreground="#FFF0E3E3"/>
-        <Border BorderBrush="Black" BorderThickness="10,1,1,10" HorizontalAlignment="Left" CornerRadius="18,18,13,13" Height="246" Margin="526,212,0,0" VerticalAlignment="Top" Width="213">
-            <TextBlock x:Name="tb_all_price_of_electrisity" TextWrapping="Wrap" Margin="40,125,36,82" Foreground="#FFD32222" FontSize="22" FontWeight="Bold"/>
-        </Border>
-        <TextBox x:Name="tb_price" HorizontalAlignment="Left" Height="29" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="69" Margin="621,245,0,0" Background="#FFD32525" FontSize="18" FontWeight="Bold" TextChanged="tb_price_TextChanged">
+        <Border BorderBrush="Black" BorderThickness="10,1,1,10" HorizontalAlignment="Left" CornerRadius="18,18,13,13" Height="192" Margin="432,189,0,0" VerticalAlignment="Top" Width="358"/>
+        <TextBox x:Name="tb_price" HorizontalAlignment="Left" Height="29" TextWrapping="Wrap" Text="10" VerticalAlignment="Top" Width="70" Margin="528,217,0,0" Background="#FFD32525" FontSize="18" FontWeight="Bold" TextChanged="tb_price_TextChanged">
             <TextBox.Effect>
                 <DropShadowEffect/>
             </TextBox.Effect>
         </TextBox>
-        <Label Content="price" HorizontalAlignment="Left" Margin="544,231,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0"/>
-        <Label Content="total price" HorizontalAlignment="Left" Margin="574,286,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0">
+        <Label Content="Price" HorizontalAlignment="Left" Margin="452,207,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0"/>
+        <Label Content="Total price" HorizontalAlignment="Left" Margin="514,263,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0">
             <Label.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" Offset="0"/>
@@ -185,39 +180,55 @@
                 </LinearGradientBrush>
             </Label.Background>
         </Label>
-        <Label Content="kWh" HorizontalAlignment="Left" Margin="690,254,0,0" VerticalAlignment="Top" FontSize="10
-               " FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0"/>
-        <TextBox x:Name="l_bit1" HorizontalAlignment="Left"  Height="40" Margin="19,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" FontSize="22" OpacityMask="#FFF1B0B0" Background="#FF746060" Text="8
-                 " FontWeight="Bold" TextChanged="l_bit1_TextChanged">
+        <Label Content="Bit" HorizontalAlignment="Left" Margin="81,162,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0">
+            <Label.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF382828" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        <Label Content="Accuracy" HorizontalAlignment="Left" Margin="14,211,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0">
+            <Label.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF382828" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        <Label Content="Value" HorizontalAlignment="Left" Margin="52,262,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0">
+            <Label.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF382828" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        <Label Content="Total electricity" HorizontalAlignment="Left" Margin="460,323,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0">
+            <Label.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF382828" Offset="1"/>
+                </LinearGradientBrush>
+            </Label.Background>
+        </Label>
+        <Label Content="kWh" HorizontalAlignment="Left" Margin="598,226,0,0" VerticalAlignment="Top" FontSize="10" FontWeight="Bold" BorderBrush="#FFE6DCDC" Foreground="#FFD8D0D0"/>
+        <TextBox x:Name="l_bit1" HorizontalAlignment="Left"  Height="40" Margin="137,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" FontSize="22" OpacityMask="#FFF1B0B0" Background="#FF746060" TextChanged="l_bit1_TextChanged"  Text="8" FontWeight="Bold" >
             <TextBox.Effect>
                 <DropShadowEffect BlurRadius="20"/>
             </TextBox.Effect>
         </TextBox>
-        <Button Content="Change bit" HorizontalAlignment="Left" Margin="78,192,0,0" VerticalAlignment="Top" Width="71" Height="30" Foreground="#FFF9F2F2" Click="Button_Click_1">
-            <Button.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="#FFD84141" Offset="1"/>
-                </LinearGradientBrush>
-            </Button.Background>
-        </Button>
-        <Button Content="Change accuracy" HorizontalAlignment="Left" Margin="78,232,0,0" VerticalAlignment="Top" Width="103" Height="30" Foreground="#FFF9F2F2" Click="Button_Click_3" >
-            <Button.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="#FFD84141" Offset="1"/>
-                </LinearGradientBrush>
-            </Button.Background>
-        </Button>
-        <Button Content="Change value" HorizontalAlignment="Left" Margin="188,285,0,0" VerticalAlignment="Top" Width="101" Height="30" Foreground="#FFF9F2F2" Click="Button_Click">
-            <Button.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="#FFD84141" Offset="1"/>
-                </LinearGradientBrush>
-            </Button.Background>
-        </Button>
-        <ComboBox x:Name="Calendar" HorizontalAlignment="Left" Margin="619,182,0,0" VerticalAlignment="Top" Width="120" BorderBrush="#FFFF8D8D" Background="#FF492C2C" SelectionChanged="Calendar_SelectionChanged" Foreground="Black" SelectedIndex="0">
+        <TextBox x:Name="l_accuracy" Foreground="Red" HorizontalAlignment="Left"  Height="34" Margin="137,216,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" FontSize="22" OpacityMask="#FFF1B0B0" Background="#FF746060" Text="3" FontWeight="Bold" TextChanged="l_accuracy_TextChanged" >
+            <TextBox.Effect>
+                <DropShadowEffect BlurRadius="20"/>
+            </TextBox.Effect>
+        </TextBox>
+        <TextBox x:Name="tb_Order" HorizontalAlignment="Left"  Height="34" Margin="746,76,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" FontSize="22" OpacityMask="#FFF1B0B0" Background="#FF746060" Text="50" FontWeight="Bold" >
+            <TextBox.Effect>
+                <DropShadowEffect BlurRadius="20"/>
+            </TextBox.Effect>
+        </TextBox>
+        <ComboBox x:Name="Calendar" HorizontalAlignment="Left" Margin="461,162,0,0" VerticalAlignment="Top" Width="120" BorderBrush="#FFFF8D8D" Background="#FF492C2C" SelectionChanged="Calendar_SelectionChanged" Foreground="Black" SelectedIndex="0">
             <TextBlock Text="January"/>
             <TextBlock Text="February"/>
             <TextBlock Text="March"/>
@@ -231,7 +242,7 @@
             <TextBlock Text="November"/>
             <TextBlock Text="December"/>
         </ComboBox>
-        <Button x:Name="btn_Safe_total_price" Content="Safe" HorizontalAlignment="Left" Margin="604,404,0,0" VerticalAlignment="Top" Width="86" Click="btn_Safe_total_price_Click" Foreground="#FFFBECEC" FontWeight="Bold" Height="31">
+        <Button x:Name="btn_Safe_total_price" Content="Safe" HorizontalAlignment="Left" Margin="685,216,0,0" VerticalAlignment="Top" Width="86" Click="btn_Safe_total_price_Click" Foreground="#FFFBECEC" FontWeight="Bold" Height="31">
             <Button.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" Offset="0"/>
@@ -239,5 +250,15 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
+        <Button x:Name="btn_Reset" Content="Reset" HorizontalAlignment="Left" Margin="700,151,0,0" VerticalAlignment="Top" Width="86" Foreground="#FFFBECEC" FontWeight="Bold" Height="31" Click="btn_Reset_Click">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FFE24141" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBlock x:Name="tb_all_price_of_electrisity" Text="0" TextWrapping="Wrap" Foreground="MintCream" Margin="652,269,47,290" FontSize="22"  FontWeight="Bold"/>
+        <TextBlock x:Name="tb_all_electrisity" Text="0" TextWrapping="Wrap" Margin="652,325,47,235" FontSize="22" Foreground="MintCream" FontWeight="Bold"/>
     </Grid>
 </Window>

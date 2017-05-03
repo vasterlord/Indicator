@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace Indicator
 
         public static void ShowIntoEkran(Calculated_book CBook)
         {
-            List<int> AllResult = CBook.Book[CBook.Book.Count - 1].Show();
+            List<int> AllResult = CBook[CBook.Book.Count - 1].Show();
             int count = 0;
             showL.Reverse();
             AllResult.Reverse();
@@ -50,11 +51,11 @@ namespace Indicator
             showL.Reverse();
             showG.Reverse();
             var bc = new BrushConverter();
-            for (int i = 0; i < CBook.Book[CBook.Book.Count - 1].Accuracy; i++)
+            for (int i = 0; i < CBook[CBook.Book.Count - 1].Accuracy; i++)
             {
                 showG[i].Background = (Brush)bc.ConvertFrom("#FFAC0000");
             }
-            for (int i = CBook.Book[CBook.Book.Count - 1].Accuracy; i < showG.Count; i++)
+            for (int i = CBook[CBook.Book.Count - 1].Accuracy; i < showG.Count; i++)
             {
                 showG[i].Background = (Brush)bc.ConvertFrom("#FF746060");
             }
@@ -63,13 +64,28 @@ namespace Indicator
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            try
+            { 
             double CounterValue =  Convert.ToDouble(tb_value_of_new_Counter.Text);
             CBook.Book.Add(new Electricity_meter(Convert.ToInt32(l_max.Content), 0,  CounterValue, Convert.ToInt32(l_accuracy.Text), Convert.ToInt32(l_bit1.Text)));
+            l_bit1.Text = CBook.Book[CBook.Book.Count - 1].Bit.ToString();
+            l_accuracy.Text = CBook[CBook.Book.Count - 1].Accuracy.ToString();
+            tb_value_of_new_Counter.Text = CBook[CBook.Book.Count - 1].Value.ToString();
             ShowIntoEkran(CBook);
-            Designcounter();
+            DesignCounter();
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price());
+            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X); 
+            tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y); 
+            }
+            catch (FormatException fx)
+            {
+                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -80,68 +96,93 @@ namespace Indicator
 
         private void b_up_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (CheckCalculatedBook())
+            {
+                MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
             CBook.Book[CBook.Book.Count - 1]--;
             ShowIntoEkran(CBook);
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price());
+            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+            tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
         }
 
         private void b_down_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CBook.Book[CBook.Book.Count - 1]++;
+            if (CheckCalculatedBook())
+            {
+                MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            CBook[CBook.Book.Count - 1]++;
             ShowIntoEkran(CBook);
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price());
+            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+            tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
         }
 
         private void tb_price_TextChanged(object sender, TextChangedEventArgs e)
         {
-            CBook.Price = Convert.ToDouble(tb_price.Text);
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price()); 
+            try
+            {
+                CBook.Price = Convert.ToDouble(tb_price.Text);
+                Point pointResult = new Point();
+                pointResult = CBook.Calculate_price();
+                tb_all_price_of_electrisity.Text = pointResult.X.ToString();
+                tb_all_electrisity.Text = Convert.ToString(pointResult.Y);
+            }
+            catch (FormatException fex)
+            {
+                MessageBox.Show(fex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (NullReferenceException) { }
+            catch (Exception) { }
         }
 
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void DesignCounter()
         {
-            CBook.Book[CBook.Book.Count - 1].Bit = Convert.ToInt32(l_bit1.Text);
-            Designcounter();
-            slider.Maximum = Math.Pow(10, CBook.Book[CBook.Book.Count - 1].Bit);
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price());
-        }
-
-        private void Designcounter()
-        {
-            int MakeInvalid = showL.Count - CBook.Book[CBook.Book.Count - 1].Bit;
+            int MakeInvalid = showL.Count - CBook[CBook.Book.Count - 1].Bit;
             showL.Reverse();
-            for (int i = CBook.Book[CBook.Book.Count - 1].Bit; i < showL.Count; i++)
+            for (int i = CBook[CBook.Book.Count - 1].Bit; i < showL.Count; i++)
             {
                 showL[i].Visibility = Visibility.Collapsed;
             }
-            for (int i = 0; i < CBook.Book[CBook.Book.Count - 1].Bit; i++)
+            for (int i = 0; i < CBook[CBook.Book.Count - 1].Bit; i++)
             {
                 showL[i].Visibility = Visibility.Visible;
             }
             showL.Reverse();
         }
-
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        
+        private void Calendar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CBook.Book[CBook.Book.Count - 1].Accuracy = Convert.ToInt32(l_accuracy.Text); 
-            showG.Reverse();
-            var bc = new BrushConverter();
-            for (int i = 0; i < CBook.Book[CBook.Book.Count - 1].Accuracy; i++)
+            if (CheckCalculatedBook())
             {
-                showG[i].Background = (Brush)bc.ConvertFrom("#FFAC0000");
+                return;
             }
-            for (int i = CBook.Book[CBook.Book.Count - 1].Accuracy; i < showG.Count; i++)
+            if (CBook.Total_prices[Calendar.SelectedIndex] == new Point(0,0))
             {
-                showG[i].Background = (Brush)bc.ConvertFrom("#FF746060");
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
             }
-            showG.Reverse();
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price());
-            Designcounter();
+            else
+            {
+                tb_all_price_of_electrisity.Text = CBook.Total_prices[Calendar.SelectedIndex].X.ToString();
+                tb_all_electrisity.Text = CBook.Total_prices[Calendar.SelectedIndex].Y.ToString();
+            }
+        }
+
+        private void btn_Safe_total_price_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckCalculatedBook())
+            {
+                MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            CBook.Total_prices[Calendar.SelectedIndex] = new Point(Convert.ToDouble(tb_all_price_of_electrisity.Text), Convert.ToDouble(tb_all_electrisity.Text));
         }
 
         private void l_bit1_TextChanged(object sender, TextChangedEventArgs e)
@@ -156,35 +197,157 @@ namespace Indicator
                 {
                     slider.Maximum = Math.Pow(10, Convert.ToDouble(l_bit1.Text));
                 }
+
+                if (CheckCalculatedBook())
+                {
+                    return;
+                }
+                CBook.Book[CBook.Book.Count - 1].Bit = Convert.ToInt32(l_bit1.Text);
+                l_bit1.Text = CBook.Book[CBook.Book.Count - 1].Bit.ToString();
+                DesignCounter();
+                slider.Maximum = Math.Pow(10, CBook[CBook.Book.Count - 1].Bit);
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
             }
-            catch (FormatException)
-            {
-                slider.Maximum = Math.Pow(10, 8);
-            } 
-        }
-        private void Calendar_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            catch (Exception) { }
+        } 
+
+        public bool CheckCalculatedBook()
         {
-            if (CBook.Total_prices[Calendar.SelectedIndex] == 0)
+            if (CBook.Book.Count == 0)
             {
-                tb_all_price_of_electrisity.Text = "0";
+                return true;
             }
             else
             {
-                tb_all_price_of_electrisity.Text = CBook.Total_prices[Calendar.SelectedIndex].ToString();
+                return false;
             }
         }
 
-        private void btn_Safe_total_price_Click(object sender, RoutedEventArgs e)
+        private void b_add_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CBook.Total_prices[Calendar.SelectedIndex] = Math.Round((Convert.ToDouble(tb_all_price_of_electrisity.Text)), 2);
+            try
+            {
+                if (CheckCalculatedBook())
+            {
+                MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            CBook[CBook.Book.Count - 1] += Convert.ToInt32(tb_Order.Text);
+            ShowIntoEkran(CBook);
+            CBook.Price = Convert.ToDouble(tb_price.Text);
+            CBook.Date = Calendar.Text;
+            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+            tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            }
+            catch (FormatException fx)
+            {
+                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void b_minus_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CBook.Book[CBook.Book.Count - 1].Value = Convert.ToInt32(tb_value_of_new_Counter.Text);
+            try
+            {
+                if (CheckCalculatedBook())
+                {
+                    MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                CBook[CBook.Book.Count - 1] -= Convert.ToInt32(tb_Order.Text);
+                ShowIntoEkran(CBook);
+                CBook.Price = Convert.ToDouble(tb_price.Text);
+                CBook.Date = Calendar.Text;
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            }
+            catch (FormatException fx)
+            {
+                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btn_Reset_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckCalculatedBook())
+            {
+                MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            CBook[CBook.Book.Count - 1].Value = 0;
             ShowIntoEkran(CBook);
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price());
-            Designcounter();
+            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+            tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            DesignCounter();
+        }
+
+        private void l_accuracy_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                if (CheckCalculatedBook())
+                {
+                    return;
+                }
+                CBook[CBook.Book.Count - 1].Accuracy = Convert.ToInt32(l_accuracy.Text);
+                l_accuracy.Text = CBook[CBook.Book.Count - 1].Accuracy.ToString();
+                showG.Reverse();
+                var bc = new BrushConverter();
+                for (int i = 0; i < CBook[CBook.Book.Count - 1].Accuracy; i++)
+                {
+                    showG[i].Background = (Brush)bc.ConvertFrom("#FFAC0000");
+                }
+                for (int i = CBook[CBook.Book.Count - 1].Accuracy; i < showG.Count; i++)
+                {
+                    showG[i].Background = (Brush)bc.ConvertFrom("#FF746060");
+                }
+                showG.Reverse();
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                DesignCounter();
+            }
+            catch (FormatException fx)
+            {
+                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                l_accuracy.Text = CBook[CBook.Book.Count - 1].Accuracy.ToString();
+            }
+            catch (NullReferenceException) { }
+            catch (Exception ex) { }
+        }
+
+        private void tb_value_of_new_Counter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                if (CheckCalculatedBook())
+                {
+                    return;
+                }
+                CBook[CBook.Book.Count - 1].Value = Convert.ToInt32(tb_value_of_new_Counter.Text);
+                l_bit1.Text = CBook.Book[CBook.Book.Count - 1].Bit.ToString();
+                ShowIntoEkran(CBook);
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                DesignCounter();
+            }
+            catch (FormatException fx)
+            {
+                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (NullReferenceException) { }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }
