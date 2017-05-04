@@ -104,8 +104,8 @@ namespace Indicator
         }
         public Electricity_meter(int max, int min ,double value, int accuracy, int bit ):base(max,min,value)
         {
-            this.Accuracy = accuracy;
             this.Bit = bit;
+            this.Accuracy = accuracy;
         }
         private int _bit;
         private int _accuracy;
@@ -154,7 +154,7 @@ namespace Indicator
         }
         public IEnumerator GetEnumerator()
         {
-            yield return this.Value + 100;
+            yield return this.Value;
         } 
 
         public override List<int> Show()

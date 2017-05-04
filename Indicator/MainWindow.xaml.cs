@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -22,18 +23,20 @@ namespace Indicator
     public partial class MainWindow : Window
     {
         public Calculated_book CBook = new Calculated_book();
-        public static List<Label> showL;
-        public static List<Grid> showG;
+        public List<Label> showL;
+        public List<Grid> showG;
+        public int idCounter;
         public MainWindow()
         {
             InitializeComponent();
+            idCounter = 0;
             showL = new List<Label>() { n1, n2, n3, n4, n5, n6, n7, n8 };
             showG = new List<Grid>() { g1, g2, g3, g4, g5, g6, g7, g8 };
         }
 
-        public static void ShowIntoEkran(Calculated_book CBook)
+        public  void ShowIntoEkran(Calculated_book CBook)
         {
-            List<int> AllResult = CBook[CBook.Book.Count - 1].Show();
+            List<int> AllResult = CBook[idCounter].Show();
             int count = 0;
             showL.Reverse();
             AllResult.Reverse();
@@ -51,11 +54,11 @@ namespace Indicator
             showL.Reverse();
             showG.Reverse();
             var bc = new BrushConverter();
-            for (int i = 0; i < CBook[CBook.Book.Count - 1].Accuracy; i++)
+            for (int i = 0; i < CBook[idCounter].Accuracy; i++)
             {
                 showG[i].Background = (Brush)bc.ConvertFrom("#FFAC0000");
             }
-            for (int i = CBook[CBook.Book.Count - 1].Accuracy; i < showG.Count; i++)
+            for (int i = CBook[idCounter].Accuracy; i < showG.Count; i++)
             {
                 showG[i].Background = (Brush)bc.ConvertFrom("#FF746060");
             }
@@ -65,33 +68,35 @@ namespace Indicator
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             try
-            { 
-            double CounterValue =  Convert.ToDouble(tb_value_of_new_Counter.Text);
-            CBook.Book.Add(new Electricity_meter(Convert.ToInt32(l_max.Content), 0,  CounterValue, Convert.ToInt32(l_accuracy.Text), Convert.ToInt32(l_bit1.Text)));
-            l_bit1.Text = CBook.Book[CBook.Book.Count - 1].Bit.ToString();
-            l_accuracy.Text = CBook[CBook.Book.Count - 1].Accuracy.ToString();
-            tb_value_of_new_Counter.Text = CBook[CBook.Book.Count - 1].Value.ToString();
-            ShowIntoEkran(CBook);
-            DesignCounter();
-            CBook.Price = Convert.ToDouble(tb_price.Text);
-            CBook.Date = Calendar.Text;
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X); 
-            tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y); 
-            }
-            catch (FormatException fx)
             {
-                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                double CounterValue = Convert.ToDouble(tb_value_of_new_Counter.Text);
+                CBook.Book.Add(new Electricity_meter(Convert.ToInt32(l_max.Content), 0, CounterValue, Convert.ToInt32(l_accuracy.Text), Convert.ToInt32(l_bit1.Text)));
+                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
+                l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
+                tb_value_of_new_Counter.Text = CBook[idCounter].Value.ToString();
+                ShowIntoEkran(CBook);
+                DesignCounter();
+                CBook.Price = Convert.ToDouble(tb_price.Text);
+                CBook.Date = Calendar.Text;
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            catch (Exception) { }
         }
 
         private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (l_max != null)
+            try
+            {
+                if (l_max != null)
                 l_max.Content = Convert.ToInt32(slider.Value).ToString();
+                CBook.Book[idCounter].MaxValue = Convert.ToInt32(l_max.Content);
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
+            }
+            catch (Exception) { }
         }
 
         private void b_up_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -101,12 +106,14 @@ namespace Indicator
                 MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            CBook.Book[CBook.Book.Count - 1]--;
+            CBook.Book[idCounter]--;
             ShowIntoEkran(CBook);
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            dataGrid.ItemsSource = CBook.Book;
+            dataGrid.Items.Refresh();
         }
 
         private void b_down_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -116,12 +123,14 @@ namespace Indicator
                 MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            CBook[CBook.Book.Count - 1]++;
+            CBook[idCounter]++;
             ShowIntoEkran(CBook);
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            dataGrid.ItemsSource = CBook.Book;
+            dataGrid.Items.Refresh();
         }
 
         private void tb_price_TextChanged(object sender, TextChangedEventArgs e)
@@ -134,23 +143,18 @@ namespace Indicator
                 tb_all_price_of_electrisity.Text = pointResult.X.ToString();
                 tb_all_electrisity.Text = Convert.ToString(pointResult.Y);
             }
-            catch (FormatException fex)
-            {
-                MessageBox.Show(fex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (NullReferenceException) { }
             catch (Exception) { }
         }
 
         private void DesignCounter()
         {
-            int MakeInvalid = showL.Count - CBook[CBook.Book.Count - 1].Bit;
+            int MakeInvalid = showL.Count - CBook[idCounter].Bit;
             showL.Reverse();
-            for (int i = CBook[CBook.Book.Count - 1].Bit; i < showL.Count; i++)
+            for (int i = CBook[idCounter].Bit; i < showL.Count; i++)
             {
                 showL[i].Visibility = Visibility.Collapsed;
             }
-            for (int i = 0; i < CBook[CBook.Book.Count - 1].Bit; i++)
+            for (int i = 0; i < CBook[idCounter].Bit; i++)
             {
                 showL[i].Visibility = Visibility.Visible;
             }
@@ -197,17 +201,18 @@ namespace Indicator
                 {
                     slider.Maximum = Math.Pow(10, Convert.ToDouble(l_bit1.Text));
                 }
-
                 if (CheckCalculatedBook())
                 {
                     return;
                 }
-                CBook.Book[CBook.Book.Count - 1].Bit = Convert.ToInt32(l_bit1.Text);
-                l_bit1.Text = CBook.Book[CBook.Book.Count - 1].Bit.ToString();
+                CBook.Book[idCounter].Bit = Convert.ToInt32(l_bit1.Text);
+                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
                 DesignCounter();
-                slider.Maximum = Math.Pow(10, CBook[CBook.Book.Count - 1].Bit);
+                slider.Maximum = Math.Pow(10, CBook[idCounter].Bit);
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
             }
             catch (Exception) { }
         } 
@@ -229,24 +234,23 @@ namespace Indicator
             try
             {
                 if (CheckCalculatedBook())
-            {
-                MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-            CBook[CBook.Book.Count - 1] += Convert.ToInt32(tb_Order.Text);
-            ShowIntoEkran(CBook);
-            CBook.Price = Convert.ToDouble(tb_price.Text);
-            CBook.Date = Calendar.Text;
-            tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
-            tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                {
+                    MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                CBook[idCounter] += Convert.ToInt32(tb_Order.Text);
+                ShowIntoEkran(CBook);
+                CBook.Price = Convert.ToDouble(tb_price.Text);
+                CBook.Date = Calendar.Text;
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
             }
             catch (FormatException fx)
             {
                 MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                tb_Order.Text = "10";
             }
         }
 
@@ -259,20 +263,19 @@ namespace Indicator
                     MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
-                CBook[CBook.Book.Count - 1] -= Convert.ToInt32(tb_Order.Text);
+                CBook[idCounter] -= Convert.ToInt32(tb_Order.Text);
                 ShowIntoEkran(CBook);
                 CBook.Price = Convert.ToDouble(tb_price.Text);
                 CBook.Date = Calendar.Text;
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
             }
             catch (FormatException fx)
             {
                 MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                tb_Order.Text = "10";
             }
         }
 
@@ -283,11 +286,14 @@ namespace Indicator
                 MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            CBook[CBook.Book.Count - 1].Value = 0;
+            CBook[idCounter].Value = 0;
             ShowIntoEkran(CBook);
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            tb_value_of_new_Counter.Text = "0";
             DesignCounter();
+            dataGrid.ItemsSource = CBook.Book;
+            dataGrid.Items.Refresh();
         }
 
         private void l_accuracy_TextChanged(object sender, TextChangedEventArgs e)
@@ -298,15 +304,15 @@ namespace Indicator
                 {
                     return;
                 }
-                CBook[CBook.Book.Count - 1].Accuracy = Convert.ToInt32(l_accuracy.Text);
-                l_accuracy.Text = CBook[CBook.Book.Count - 1].Accuracy.ToString();
+                CBook[idCounter].Accuracy = Convert.ToInt32(l_accuracy.Text);
+                l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
                 showG.Reverse();
                 var bc = new BrushConverter();
-                for (int i = 0; i < CBook[CBook.Book.Count - 1].Accuracy; i++)
+                for (int i = 0; i < CBook[idCounter].Accuracy; i++)
                 {
                     showG[i].Background = (Brush)bc.ConvertFrom("#FFAC0000");
                 }
-                for (int i = CBook[CBook.Book.Count - 1].Accuracy; i < showG.Count; i++)
+                for (int i = CBook[idCounter].Accuracy; i < showG.Count; i++)
                 {
                     showG[i].Background = (Brush)bc.ConvertFrom("#FF746060");
                 }
@@ -314,14 +320,10 @@ namespace Indicator
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
                 DesignCounter();
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
             }
-            catch (FormatException fx)
-            {
-                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                l_accuracy.Text = CBook[CBook.Book.Count - 1].Accuracy.ToString();
-            }
-            catch (NullReferenceException) { }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
 
         private void tb_value_of_new_Counter_TextChanged(object sender, TextChangedEventArgs e)
@@ -332,22 +334,66 @@ namespace Indicator
                 {
                     return;
                 }
-                CBook[CBook.Book.Count - 1].Value = Convert.ToInt32(tb_value_of_new_Counter.Text);
-                l_bit1.Text = CBook.Book[CBook.Book.Count - 1].Bit.ToString();
+                CBook[idCounter].Value = Convert.ToInt32(tb_value_of_new_Counter.Text);
+                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
                 ShowIntoEkran(CBook);
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
                 DesignCounter();
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
             }
-            catch (FormatException fx)
+            catch (Exception) { }
+        }
+
+        private void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            e.Column.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+        }
+
+        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
             {
-                MessageBox.Show(fx.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Electricity_meter tempCounter = (Electricity_meter)dataGrid.SelectedItem;
+                idCounter = CBook.Book.IndexOf(tempCounter);
+                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
+                l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
+                tb_value_of_new_Counter.Text = CBook[idCounter].Value.ToString();
+                showG.Reverse();
+                var bc = new BrushConverter();
+                for (int i = 0; i < CBook[idCounter].Accuracy; i++)
+                {
+                    showG[i].Background = (Brush)bc.ConvertFrom("#FFAC0000");
+                }
+                for (int i = CBook[idCounter].Accuracy; i < showG.Count; i++)
+                {
+                    showG[i].Background = (Brush)bc.ConvertFrom("#FF746060");
+                }
+                showG.Reverse();
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                ShowIntoEkran(CBook);
+                DesignCounter();
             }
-            catch (NullReferenceException) { }
-            catch (Exception ex)
+            catch (Exception) { }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            try
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (CheckCalculatedBook())
+                {
+                    MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                CBook.Book.Remove(CBook[idCounter]);
+                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.Items.Refresh();
+                dataGrid.SelectedIndex = 0;
             }
+            catch (Exception) { }
         }
     }
 }
