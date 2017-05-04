@@ -71,7 +71,7 @@ namespace Indicator
             {
                 double CounterValue = Convert.ToDouble(tb_value_of_new_Counter.Text);
                 CBook.Book.Add(new Electricity_meter(Convert.ToInt32(l_max.Content), 0, CounterValue, Convert.ToInt32(l_accuracy.Text), Convert.ToInt32(l_bit1.Text)));
-                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
+                l_bit1.Text = CBook[idCounter].Bit.ToString();
                 l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
                 tb_value_of_new_Counter.Text = CBook[idCounter].Value.ToString();
                 ShowIntoEkran(CBook);
@@ -80,7 +80,7 @@ namespace Indicator
                 CBook.Date = Calendar.Text;
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
-                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (Exception) { }
@@ -93,7 +93,7 @@ namespace Indicator
                 if (l_max != null)
                 l_max.Content = Convert.ToInt32(slider.Value).ToString();
                 CBook.Book[idCounter].MaxValue = Convert.ToInt32(l_max.Content);
-                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (Exception) { }
@@ -106,13 +106,13 @@ namespace Indicator
                 MessageBox.Show("We don't have electricity mater! Please, add at least one more!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
-            CBook.Book[idCounter]--;
+            CBook[idCounter]--;
             ShowIntoEkran(CBook);
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
-            dataGrid.ItemsSource = CBook.Book;
+            dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
             dataGrid.Items.Refresh();
         }
 
@@ -129,7 +129,7 @@ namespace Indicator
             CBook.Date = Calendar.Text;
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
-            dataGrid.ItemsSource = CBook.Book;
+            dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
             dataGrid.Items.Refresh();
         }
 
@@ -205,13 +205,13 @@ namespace Indicator
                 {
                     return;
                 }
-                CBook.Book[idCounter].Bit = Convert.ToInt32(l_bit1.Text);
-                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
+                CBook[idCounter].Bit = Convert.ToInt32(l_bit1.Text);
+                l_bit1.Text = CBook[idCounter].Bit.ToString();
                 DesignCounter();
                 slider.Maximum = Math.Pow(10, CBook[idCounter].Bit);
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
-                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (Exception) { }
@@ -244,7 +244,7 @@ namespace Indicator
                 CBook.Date = Calendar.Text;
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
-                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (FormatException fx)
@@ -269,7 +269,7 @@ namespace Indicator
                 CBook.Date = Calendar.Text;
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
-                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (FormatException fx)
@@ -292,7 +292,7 @@ namespace Indicator
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
             tb_value_of_new_Counter.Text = "0";
             DesignCounter();
-            dataGrid.ItemsSource = CBook.Book;
+            dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
             dataGrid.Items.Refresh();
         }
 
@@ -320,7 +320,7 @@ namespace Indicator
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
                 DesignCounter();
-                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (Exception) { }
@@ -335,12 +335,12 @@ namespace Indicator
                     return;
                 }
                 CBook[idCounter].Value = Convert.ToInt32(tb_value_of_new_Counter.Text);
-                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
+                l_bit1.Text = CBook[idCounter].Bit.ToString();
                 ShowIntoEkran(CBook);
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
                 DesignCounter();
-                dataGrid.ItemsSource = CBook.Book;
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (Exception) { }
@@ -357,7 +357,7 @@ namespace Indicator
             {
                 Electricity_meter tempCounter = (Electricity_meter)dataGrid.SelectedItem;
                 idCounter = CBook.Book.IndexOf(tempCounter);
-                l_bit1.Text = CBook.Book[idCounter].Bit.ToString();
+                l_bit1.Text = CBook[idCounter].Bit.ToString();
                 l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
                 tb_value_of_new_Counter.Text = CBook[idCounter].Value.ToString();
                 showG.Reverse();

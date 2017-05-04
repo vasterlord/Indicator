@@ -89,10 +89,43 @@ namespace Indicator
                 }
             }
         }
-        public abstract List<int> Show();
+        public virtual List<int> Show()
+        {
+            List<int> result = new List<int>();
+            string Numbers = Value.ToString();
+
+            var intList = Numbers.Select(digit => int.Parse(digit.ToString()));
+
+            foreach (char i in intList)
+            {
+                result.Add(i);
+            }
+            return result;
+        } 
+
+        public static Counter operator ++(Counter counter)
+        {
+            counter.Value++;
+            return counter;
+        }
+        public static Counter operator --(Counter counter)
+        {
+            counter.Value--;
+            return counter;
+        }
+        public static Counter operator +(Counter counter, int asc)
+        {
+            counter.Value = counter.Value + asc;
+            return counter;
+        }
+        public static Counter operator -(Counter counter, int desc)
+        {
+            counter.Value = counter.Value - desc;
+            return counter;
+        }
     } 
 
-    public class Electricity_meter : Counter, IEnumerable
+    public class Electricity_meter : Counter
     {
         public Electricity_meter() : base()
         {
@@ -152,24 +185,16 @@ namespace Indicator
                 }
             }
         }
-        public IEnumerator GetEnumerator()
+
+        public double CalcResult()
         {
-            yield return this.Value;
-        } 
+            return (double)this.Value / Math.Pow(10, this.Accuracy);
+        }
 
         public override List<int> Show()
         {
-            List<int> result = new List<int>();
-            string Numbers = Value.ToString();
-
-            var intList = Numbers.Select(digit => int.Parse(digit.ToString()));
-
-            foreach (char i in intList)
-            {
-                result.Add(i);
-            }
-            return result;
-        } 
+            return base.Show();
+        }
 
         public static Electricity_meter operator ++(Electricity_meter counter)
         {
@@ -199,14 +224,14 @@ namespace Indicator
         {
             this._price = 10;
             this.Date = "January";
-            Book = new List<Electricity_meter>(); 
+            Book = new List<Counter>(); 
         }
         public Calculated_book(double price, string date)
         {
             this._price = price;
             Date = date; 
         }
-        public double _price { get; set; }
+        private double _price;
         private string _date; 
         public double Price
         {
@@ -245,14 +270,14 @@ namespace Indicator
                 }
             }
         }
-        public List<Electricity_meter> Book = new List<Electricity_meter>();
+        public List<Counter> Book { get; set; }
         public Electricity_meter this[int x]
         {
             get
             {
                 if (x < Book.Count)
                 {
-                    return Book[x];
+                    return Book[x] as Electricity_meter;
                 }
                 else
                 {
@@ -262,15 +287,14 @@ namespace Indicator
             set
             {
                 Book[x] = value;
-            }
+            }     
         }
-
-    public Point Calculate_price()
+        public Point Calculate_price()
         { 
            double WholeElectricity = 0;
-           foreach (var i in Book)
+           foreach (Counter item in Book)
            {
-               WholeElectricity +=(double) i.Value/Math.Pow(10,i.Accuracy); 
+                WholeElectricity += (item as Electricity_meter).CalcResult();
            }
            double CommonSum = WholeElectricity * _price;
            Point result = new Point(CommonSum, WholeElectricity);
