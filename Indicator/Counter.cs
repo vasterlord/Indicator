@@ -270,7 +270,7 @@ namespace Indicator
                 }
             }
         }
-        public List<Counter> Book { get; set; }
+        public List<Counter> Book = new List<Counter>();
         public Electricity_meter this[int x]
         {
             get

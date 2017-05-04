@@ -243,7 +243,7 @@ namespace Indicator
                 CBook.Price = Convert.ToDouble(tb_price.Text);
                 CBook.Date = Calendar.Text;
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
-                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y); 
                 dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
