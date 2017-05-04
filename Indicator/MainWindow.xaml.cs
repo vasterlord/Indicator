@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -110,6 +111,7 @@ namespace Indicator
             ShowIntoEkran(CBook);
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
+            ValueChanging();
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
             dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
@@ -127,6 +129,7 @@ namespace Indicator
             ShowIntoEkran(CBook);
             CBook.Price = Convert.ToDouble(tb_price.Text);
             CBook.Date = Calendar.Text;
+            ValueChanging();
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
             dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
@@ -193,6 +196,10 @@ namespace Indicator
         {
             try
             {
+                if (CheckCalculatedBook())
+                {
+                    return;
+                }
                 if (l_bit1.Text == string.Empty || l_bit1.Text == "0" || l_bit1.Text == "" || l_bit1.Text == " ")
                 {
                     slider.Maximum = Math.Pow(10, 8);
@@ -201,21 +208,29 @@ namespace Indicator
                 {
                     slider.Maximum = Math.Pow(10, Convert.ToDouble(l_bit1.Text));
                 }
-                if (CheckCalculatedBook())
-                {
-                    return;
-                }
                 CBook[idCounter].Bit = Convert.ToInt32(l_bit1.Text);
                 l_bit1.Text = CBook[idCounter].Bit.ToString();
                 DesignCounter();
                 slider.Maximum = Math.Pow(10, CBook[idCounter].Bit);
+                ValueChanging();
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
                 dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
             catch (Exception) { }
-        } 
+        }
+
+        private void ValueChanging()
+        {
+            List<int> AllResult = CBook[idCounter].Show();
+            int subs = AllResult.Count - CBook[idCounter].Bit;
+            if (subs > 0)
+            {
+                AllResult.RemoveRange(0, subs);
+            }
+            tb_value_of_new_Counter.Text = string.Join("", AllResult);
+        }
 
         public bool CheckCalculatedBook()
         {
@@ -242,6 +257,7 @@ namespace Indicator
                 ShowIntoEkran(CBook);
                 CBook.Price = Convert.ToDouble(tb_price.Text);
                 CBook.Date = Calendar.Text;
+                ValueChanging();
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y); 
                 dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
@@ -267,6 +283,7 @@ namespace Indicator
                 ShowIntoEkran(CBook);
                 CBook.Price = Convert.ToDouble(tb_price.Text);
                 CBook.Date = Calendar.Text;
+                ValueChanging();
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
                 dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
@@ -306,6 +323,7 @@ namespace Indicator
                 }
                 CBook[idCounter].Accuracy = Convert.ToInt32(l_accuracy.Text);
                 l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
+                CBook[idCounter].Value.ToString();
                 showG.Reverse();
                 var bc = new BrushConverter();
                 for (int i = 0; i < CBook[idCounter].Accuracy; i++)
@@ -394,6 +412,12 @@ namespace Indicator
                 dataGrid.SelectedIndex = 0;
             }
             catch (Exception) { }
+        }
+
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }

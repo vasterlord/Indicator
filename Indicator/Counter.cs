@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace Indicator
 {
-    public abstract class Counter
+    public class Counter
     {
         public Counter()
         {
@@ -174,7 +174,7 @@ namespace Indicator
             }
             set
             {
-                if (value < 0 || value >= _bit)
+                if (value < 0 || value > _bit)
                 {
                     _accuracy = 1;
                     MessageBox.Show("Accuracy can't be higher then bits. Accurace setted by default to 1", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
