@@ -46,11 +46,15 @@ namespace Indicator
                 showL[count].Content = i.ToString();
                 count++;
             }
-            do
+            if (count != showL.Count)
             {
+                do
+                {
                 showL[count].Content = 0;
                 count++;
-            } while (count < showL.Count);
+                } while (count < showL.Count);
+            }
+            
 
             showL.Reverse();
             showG.Reverse();
@@ -70,8 +74,8 @@ namespace Indicator
         {
             try
             {
-                double CounterValue = Convert.ToDouble(tb_value_of_new_Counter.Text);
-                CBook.Book.Add(new Electricity_meter(Convert.ToInt32(l_max.Content), 0, CounterValue, Convert.ToInt32(l_accuracy.Text), Convert.ToInt32(l_bit1.Text)));
+                int CounterValue = Convert.ToInt32(tb_value_of_new_Counter.Text);
+                CBook.Book.Add(new Electricity_meter(Convert.ToInt32(t_Min.Text), Convert.ToInt32(l_max.Content),  CounterValue, Convert.ToInt32(l_bit1.Text), Convert.ToInt32(l_accuracy.Text)));
                 l_bit1.Text = CBook[idCounter].Bit.ToString();
                 l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
                 tb_value_of_new_Counter.Text = CBook[idCounter].Value.ToString();
@@ -114,6 +118,7 @@ namespace Indicator
             ValueChanging();
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            t_Min.Text = CBook[idCounter].MinValue.ToString();
             dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
             dataGrid.Items.Refresh();
         }
@@ -132,6 +137,7 @@ namespace Indicator
             ValueChanging();
             tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
             tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+            t_Min.Text = CBook[idCounter].MinValue.ToString(); 
             dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
             dataGrid.Items.Refresh();
         }
@@ -259,7 +265,8 @@ namespace Indicator
                 CBook.Date = Calendar.Text;
                 ValueChanging();
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
-                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y); 
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                t_Min.Text = CBook[idCounter].MinValue.ToString();
                 dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
@@ -286,6 +293,7 @@ namespace Indicator
                 ValueChanging();
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                t_Min.Text = CBook[idCounter].MinValue.ToString();
                 dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
             }
@@ -354,9 +362,11 @@ namespace Indicator
                 }
                 CBook[idCounter].Value = Convert.ToInt32(tb_value_of_new_Counter.Text);
                 l_bit1.Text = CBook[idCounter].Bit.ToString();
+                tb_value_of_new_Counter.Text = CBook[idCounter].Value.ToString();
                 ShowIntoEkran(CBook);
                 tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
                 tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                t_Min.Text = CBook[idCounter].MinValue.ToString(); 
                 DesignCounter();
                 dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
                 dataGrid.Items.Refresh();
@@ -418,6 +428,37 @@ namespace Indicator
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                if (CheckCalculatedBook())
+                {
+                    return;
+                }
+                CBook[idCounter].MinValue = Convert.ToInt32(t_Min.Text);
+                l_accuracy.Text = CBook[idCounter].Accuracy.ToString();
+                CBook[idCounter].Value.ToString();
+                showG.Reverse();
+                var bc = new BrushConverter();
+                for (int i = 0; i < CBook[idCounter].Accuracy; i++)
+                {
+                    showG[i].Background = (Brush)bc.ConvertFrom("#FFAC0000");
+                }
+                for (int i = CBook[idCounter].Accuracy; i < showG.Count; i++)
+                {
+                    showG[i].Background = (Brush)bc.ConvertFrom("#FF746060");
+                }
+                showG.Reverse();
+                tb_all_price_of_electrisity.Text = Convert.ToString(CBook.Calculate_price().X);
+                tb_all_electrisity.Text = Convert.ToString(CBook.Calculate_price().Y);
+                DesignCounter();
+                dataGrid.ItemsSource = CBook.Book.Cast<Electricity_meter>();
+                dataGrid.Items.Refresh();
+            }
+            catch (Exception) { }
         }
     }
 }
