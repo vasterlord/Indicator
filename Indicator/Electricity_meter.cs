@@ -60,7 +60,7 @@ namespace Indicator
                 if (value < 0 || value > _bit)
                 {
                     _accuracy = 1;
-                    MessageBox.Show("Accuracy can't be higher then bits. Accurace setted by default to 1", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Accuracy can't be higher then bits. Accuracy setted by default to 1", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {

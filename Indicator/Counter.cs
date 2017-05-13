@@ -105,12 +105,12 @@ namespace Indicator
             }
             return result;
         } 
-
+         
         public static Counter operator ++(Counter counter)
         {
             counter.Value++;
             return counter;
-        }
+        } 
         public static Counter operator --(Counter counter)
         {
             counter.Value--;
