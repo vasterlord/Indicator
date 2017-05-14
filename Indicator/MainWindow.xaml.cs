@@ -35,7 +35,7 @@ namespace Indicator
             showG = new List<Grid>() { g1, g2, g3, g4, g5, g6, g7, g8 };
         }
 
-        public  void ShowIntoEkran(Calculated_book CBook)
+        public void ShowIntoEkran(Calculated_book CBook)
         {
             List<int> AllResult = CBook[idCounter].Show();
             int count = 0;

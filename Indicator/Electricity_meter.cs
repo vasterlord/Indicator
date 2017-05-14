@@ -69,14 +69,23 @@ namespace Indicator
             }
         }
 
-        public double CalcResult()
+        public override double CalcResult()
         {
             return (double)this.Value / Math.Pow(10, this.Accuracy);
         }
 
         public override List<int> Show()
         {
-            return base.Show();
+            List <int> result = new List<int>();
+            string Numbers = Value.ToString();
+
+            var intList = Numbers.Select(digit => int.Parse(digit.ToString()));
+
+            foreach (char i in intList)
+            {
+                result.Add(i);
+            }
+            return result;
         }
 
         public static Electricity_meter operator ++(Electricity_meter counter)

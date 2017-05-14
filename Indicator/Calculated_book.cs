@@ -83,7 +83,7 @@ namespace Indicator
             double WholeElectricity = 0;
             foreach (Counter item in Book)
             {
-                WholeElectricity += ((Electricity_meter)item).CalcResult();
+                WholeElectricity += item.CalcResult();
             }
             double CommonSum = WholeElectricity * _price;
             Point result = new Point(CommonSum, WholeElectricity);

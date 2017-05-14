@@ -95,17 +95,15 @@ namespace Indicator
         public virtual List<int> Show()
         {
             List<int> result = new List<int>();
-            string Numbers = Value.ToString();
-
-            var intList = Numbers.Select(digit => int.Parse(digit.ToString()));
-
-            foreach (char i in intList)
-            {
-                result.Add(i);
-            }
+            result.Add(Value);
             return result;
         } 
-         
+
+        public virtual double CalcResult()
+        {
+            return (double)this.Value / 1;
+        } 
+
         public static Counter operator ++(Counter counter)
         {
             counter.Value++;
