@@ -8,7 +8,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Indicator.Calculated_book">
-    <Position X="4.5" Y="1" Width="1.5" />
+    <Position X="4.25" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAQAAAABADQAAAAAAAAAAAAABAAEAAAAAAAA=</HashCode>
       <FileName>Calculated_book.cs</FileName>
@@ -18,21 +18,21 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Indicator.Counter">
-    <Position X="2.75" Y="1" Width="1.5" />
+    <Position X="2.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAAAAAAAgAQAEAIAAAAAAEgAIAAAAgACAAAgA=</HashCode>
       <FileName>Counter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Indicator.Electricity_meter">
-    <Position X="0.5" Y="1.25" Width="1.5" />
+    <Position X="0.5" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAASAEIIAAAAAAEAAIAAAAGAAAAAgA=</HashCode>
       <FileName>Electricity_meter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Indicator.MainWindow" BaseTypeListCollapsed="true">
-    <Position X="8.75" Y="0.5" Width="1.5" />
+    <Position X="10" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>MAAABBgEAAAgAAAICAIIAkkQAAkAQIAAAAIACIABAAA=</HashCode>
       <FileName>MainWindow.xaml.cs</FileName>
@@ -40,19 +40,19 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Indicator.Properties.Resources" Collapsed="true">
-    <Position X="7" Y="4.75" Width="1.5" />
+    <Position X="1.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="Indicator.Properties.Settings">
-    <Position X="4.75" Y="4.75" Width="1.5" />
+    <Position X="4.5" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Class Name="System.Collections.Generic.List&lt;T&gt;">
-    <Position X="6.75" Y="1.5" Width="1.5" />
+    <Position X="6.5" Y="0.75" Width="1.5" />
     <NestedTypes>
       <Struct Name="System.Collections.Generic.List&lt;T&gt;.Enumerator" Collapsed="true">
         <TypeIdentifier />
@@ -60,7 +60,7 @@
       </Struct>
     </NestedTypes>
     <TypeIdentifier />
-    <Lollipop Position="0.2" />
+    <Lollipop Orientation="Right" Position="0.11" />
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
